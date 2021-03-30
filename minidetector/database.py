@@ -1,5 +1,4 @@
-from sqlalchemy import create_engine
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import create_engine, Column, String, Integer, select, UniqueConstraint
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -31,11 +30,18 @@ def create_session():
     return Session(bind=engine)
 
 
+def load_db_entries():
+    query = select([Entity.ip, Entity.mac])
+    return set((m, i) for m, i in engine.connect().execute(query).fetchall())
+
+
 class Entity(Base):
     __tablename__ = 'entity'
     id = Column(Integer, primary_key=True)
     mac = Column(String)
     ip = Column(String)
+
+    __table_args__ = (UniqueConstraint('mac', 'ip', name='_mac_ip_uc'),)
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id} MAC={self.mac} IP={self.ip}>'

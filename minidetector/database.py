@@ -1,3 +1,4 @@
+import typing
 from sqlalchemy import create_engine, Column, String, Integer, select, UniqueConstraint
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
@@ -26,11 +27,11 @@ def drop_tables():
     Base.metadata.drop_all(engine)
 
 
-def create_session():
+def create_session() -> Session:
     return Session(bind=engine)
 
 
-def load_db_entries():
+def load_db_entries() -> typing.Set[typing.Tuple[str, str]]:
     query = select([Entity.ip, Entity.mac])
     return set((m, i) for m, i in engine.connect().execute(query).fetchall())
 

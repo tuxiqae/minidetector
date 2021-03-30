@@ -33,7 +33,7 @@ def create_session() -> Session:
 
 def load_db_entries() -> typing.Set[typing.Tuple[str, str]]:
     query = select([Entity.ip, Entity.mac])
-    return set((m, i) for m, i in engine.connect().execute(query).fetchall())
+    return set((i, m) for i, m in engine.connect().execute(query).fetchall())
 
 
 class Entity(Base):

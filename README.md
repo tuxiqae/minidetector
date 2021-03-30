@@ -1,7 +1,7 @@
 # Mini Detector
 ### A small network assets detector example
 
-The mini detector sniffs network packets (using scapy) and stores all the MAC, IP couples into a table in a PostgreSQL
+The minidetector sniffs network packets (using `scapy`) and stores all the MAC, IP couples into a table in a PostgreSQL
 database.
 
 It was written as a base for job interviews questions, you may use it for inspiration, but you really don't want to use
@@ -17,7 +17,7 @@ If you want to develop as well:
 #### Pre-requisites
 
 The project expects to run on a server that runs a `PostgreSQL` server. In addition, the `PostgreSQL` server should have
-a db called `minidetector`, owned by a user called `detector`.
+a database called `minidetector`, owned by a user called `detector`.
 
 In order to set up the database on macOS, run:
 ```./setup_scripts/initialize_db_macos.sh```

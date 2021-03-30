@@ -3,9 +3,19 @@ from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 
-db_string = "postgres://detector@/minidetector"
+from os import environ
 
-engine = create_engine(db_string)
+try:
+    db_string = "postgres://{}:{}@{}/{}".format(environ['POSTGRES_USER'],
+                                                environ['POSTGRES_PASSWORD'],
+                                                environ['POSTGRES_HOST'],
+                                                environ['POSTGRES_DB'])
+
+except KeyError:
+    raise KeyError("Could not fetch one or more of following environment variables:"
+                   " POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_DB")
+
+engine = create_engine(db_string, pool_size=10, max_overflow=20)
 Base = declarative_base()
 
 

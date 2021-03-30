@@ -1,9 +1,11 @@
 # Mini Detector
 ### A small network assets detector example
 
-The mini detector sniff network packets (using scapy) and store all the mac-ip couples into a table in a postgres database.
+The mini detector sniffs network packets (using scapy) and stores all the MAC, IP couples into a table in a PostgreSQL
+database.
 
-It was written as a base for job interviews questions, you may use it for inspiration, but you really don't want to use it in production :)
+It was written as a base for job interviews questions, you may use it for inspiration, but you really don't want to use
+it in production :)
 
 #### How to install
 If you just want to run it:
@@ -13,9 +15,11 @@ If you want to develop as well:
 ```python setup.py develop```
 
 #### Pre-requisites
-The project expects to run on a server that runs a postgres server. In addition, the postgres should have a db called "minidetector", owned by a user called "detector".
- 
-In order to setup the database on MacOS, run:
+
+The project expects to run on a server that runs a `PostgreSQL` server. In addition, the `PostgreSQL` server should have
+a db called `minidetector`, owned by a user called `detector`.
+
+In order to set up the database on macOS, run:
 ```./setup_scripts/initialize_db_macos.sh```
 
 #### How to run

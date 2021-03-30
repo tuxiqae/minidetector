@@ -3,11 +3,14 @@ import argparse
 import threading
 import logging
 
-from scapy.all import sniff, Ether, IP
+from scapy.sendrecv import sniff
+from scapy.layers.inet import IP
+from scapy.layers.l2 import Ether
+
 from .database import create_tables, Entity, create_session, drop_tables
 from queue import Queue
 
-packet_queue = Queue()
+packet_queue: Queue = Queue()
 
 
 def on_packet(p):
@@ -24,7 +27,7 @@ def process_data():
             logging.info(f'Queue size: {packet_queue.qsize()}')
         mac = packet[Ether].src
         ip = packet[IP].src
-        session = create_session()
+        session = create_session()  # DB session
         query = session.query(Entity).filter_by(mac=mac, ip=ip)
         if query.count() > 0:
             logging.debug(f'skipping packet {ip} {mac}')
@@ -37,7 +40,9 @@ def process_data():
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Minidetector is an example tool for detecting network identities and insert them into a postgres database')
+    parser = argparse.ArgumentParser(
+        description='minidetector is an example tool '
+                    'for detecting network identities and inserting them into a PostgreSQL database')
     parser.add_argument("--clean", const=True, default=False, nargs='?', help="prune the existing data before starting")
     parser.add_argument("--debug", const=True, default=False, nargs='?', help="enable debug logging")
     args = parser.parse_args()

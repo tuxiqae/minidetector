@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:13.2
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-minidetector}
+      POSTGRES_USER: ${POSTGRES_USER:-detector}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD:-trust}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
+
+  sniffer:
+    build: "./minidetector"
+    command: python -m minidetector.main
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-minidetector}
+      POSTGRES_USER: ${POSTGRES_USER:-detector}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_HOST: ${POSTGRES_HOST:-localhost}
+    volumes:
+      - .:/code
+    depends_on:
+      - postgres
+    network_mode: host
+    privileged: true

@@ -19,7 +19,7 @@ services:
 
   sniffer:
     build: ./minidetector
-    command: python main.py
+    command: python -m main
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-detector}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
@@ -27,7 +27,6 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       POSTGRES_DB: ${POSTGRES_DB:-minidetector}
     volumes:
-      - ./minidetector:/code
       - ./lib:/code/lib
     depends_on:
       - postgres
@@ -36,7 +35,7 @@ services:
 
   api:
     build: ./api
-    command: python main.py
+    command: python -m main
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-detector}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
@@ -44,7 +43,6 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       POSTGRES_DB: ${POSTGRES_DB:-minidetector}
     volumes:
-      - ./api:/code
       - ./lib:/code/lib
     networks:
       - db

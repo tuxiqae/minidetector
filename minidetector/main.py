@@ -3,45 +3,60 @@ import argparse
 import threading
 import logging
 import typing
+import datetime
+from queue import Queue
 
 from scapy.sendrecv import sniff
 from scapy.layers.inet import IP
 from scapy.layers.l2 import Ether
 from scapy.packet import Packet
-from typing import Set
 
-from .database import create_tables, Entity, create_session, drop_tables, load_db_entries
-from queue import Queue
+from lib.database import create_tables, Entity, create_session, drop_tables, load_db_entries, Session
 
 packet_queue: Queue = Queue()
 
 
 def on_packet(p: Packet) -> None:
+    """
+    Checks whether a packet `p` is valid, if so, insert into `packet_queue`
+    :param p: Packet
+    :return: None
+    """
     if Ether not in p or IP not in p:
         return
     packet_queue.put(p)
 
 
 def process_data() -> None:
+    """
+    Iterates over a list of packets and inserts them into the DB
+    :return: None
+    """
     ip_mac_set: typing.Set[typing.Tuple[str, str]] = load_db_entries()
 
     packet_count = 0
-    session = create_session()  # Creates a new DB session
+    session: Session = create_session()  # Creates a new DB session
     while packet := packet_queue.get():
         packet_count += 1
         if packet_count % 100 == 0 and (qs := packet_queue.qsize() or 0) != 0:
             logging.info(f'Queue size: {qs}')
         mac = packet[Ether].src
         ip = packet[IP].src
+        entity = Entity(mac=mac, ip=ip)
 
         if (pair := (ip, mac)) not in ip_mac_set:
+            logging.info(f'Added entity {entity}')
             ip_mac_set.add(pair)
-
-            entity = Entity(mac=mac, ip=ip)
             session.add(entity)
+        else:
+            logging.debug(f'Updated entity {entity}')
+            session.query(Entity) \
+                .filter(Entity.mac == mac, Entity.ip == ip) \
+                .update({"timestamp": datetime.datetime.utcnow()})
+
+        if packet_count % 10 == 0:
             session.commit()
 
-            logging.info(f'Added entity {entity}')
     session.close()
 
 

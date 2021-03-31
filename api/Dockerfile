@@ -3,6 +3,5 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /code
 COPY setup.py /code/
 COPY README.md /code/
-# TODO: Remove README.md?
-RUN python setup.py develop
+RUN pip install .
 COPY . /code/

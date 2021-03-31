@@ -14,10 +14,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "scapy",
-        "sqlalchemy",
-        "psycopg2",
-        "fastapi",
-        "uvicorn[standard]"
+        "sqlalchemy>=1.3,<1.4",
+        "psycopg2-binary",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

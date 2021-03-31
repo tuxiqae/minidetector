@@ -7,7 +7,7 @@ The `minidetector` is an app which sniffs network traffic in order to map the ne
 `minidetector` is built upon 2 sub-projects:
 
 - [`sniffer`](./minidetector) - Sniffs the packets and inserts MAC, IP address pairs into the database.
-- [`api`](./api/) - Allows users to fetch the mapped data from the DB using a safe and sound interface.
+- [`api`](./api) - Allows users to fetch the mapped data from the DB using a safe and sound interface.
 
 --------
 
@@ -47,5 +47,4 @@ sniffer_1   | INFO:root:Queue size: 1
 sniffer_1   | INFO:root:Queue size: 1
 sniffer_1   | INFO:root:Queue size: 12
 sniffer_1   | INFO:root:Queue size: 1
-
 ```

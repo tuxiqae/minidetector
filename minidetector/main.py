@@ -1,5 +1,4 @@
 #! /usr/bin/env python3
-import argparse
 import threading
 import logging
 import typing
@@ -11,7 +10,8 @@ from scapy.layers.inet import IP
 from scapy.layers.l2 import Ether
 from scapy.packet import Packet
 
-from lib.database import create_tables, Entity, create_session, drop_tables, load_db_entries, Session
+from lib.database import Entity, create_session, load_db_entries, Session, db_init
+from argparser import argparse_init
 
 packet_queue: Queue = Queue()
 
@@ -43,8 +43,10 @@ def process_data() -> None:
 
     while packet := packet_queue.get():
         packet_count += 1
+
         if packet_count % 100 == 0 and (qs := packet_queue.qsize() or 0) != 0:
             logging.info(f'Queue size: {qs}')
+
         mac = packet[Ether].src
         ip = packet[IP].src
         entity = Entity(mac=mac, ip=ip)
@@ -71,18 +73,8 @@ def process_data() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description='minidetector is an example tool '
-                    'for detecting network identities and inserting them into a PostgreSQL database')
-    parser.add_argument("--clean", const=True, default=False, nargs='?', help="prune the existing data before starting")
-    parser.add_argument("--debug", const=True, default=False, nargs='?', help="enable debug logging")
-    args = parser.parse_args()
-    logging.root.setLevel(logging.DEBUG if args.debug else logging.INFO)
-    if args.clean:
-        logging.debug('Dropping all tables')
-        drop_tables()
-    logging.debug('Creating all tables')
-    create_tables()
+    db_init(argparse_init().clean)
+
     logging.debug('Starting sniffing thread')
     sniffing_thread = threading.Thread(target=lambda: sniff(prn=on_packet), daemon=True)
     sniffing_thread.start()

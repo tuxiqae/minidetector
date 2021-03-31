@@ -1,3 +1,4 @@
+import logging
 import typing
 import datetime
 from os import environ
@@ -69,7 +70,7 @@ def fetch_entities(db: Session) -> Query:
 
 
 # GET /routers
-def fetch_routers(db: Session):
+def fetch_routers(db: Session) -> Query:
     """
     Fetches "routers" (MAC addresses which appeared more than 3 times) from the DB
 
@@ -80,7 +81,7 @@ def fetch_routers(db: Session):
 
 
 # GET /lastseen
-def fetch_lastseen(db: Session):
+def fetch_lastseen(db: Session) -> Query:
     """
     Fetches all timestamp, MAC, IP trios from the DB, ordered by recency
 
@@ -103,9 +104,28 @@ class Entity(Base):
         return f'<{self.__class__.__name__} id={self.id} MAC={self.mac} IP={self.ip}>'
 
 
-def get_db():
+def get_db() -> Session:
+    """
+    Returns a DB generator
+
+    :return: Session
+    """
     db = create_session()
     try:
         yield db
     finally:
         db.close()
+
+
+def db_init(clean_db: bool) -> None:
+    """
+    Initializes the tables by optionally dropping and then creating the tables
+
+    :param clean_db: Whether or not to drop the tables
+    :return: None
+    """
+    if clean_db:
+        logging.debug('Dropping all tables')
+        drop_tables()
+    logging.debug('Creating all tables')
+    create_tables()

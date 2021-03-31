@@ -1,11 +1,11 @@
 import logging
 import typing
-import datetime
 from os import environ
 
-from sqlalchemy import create_engine, Column, String, Integer, select, UniqueConstraint, func, DateTime, desc
+from sqlalchemy import create_engine, select, func, desc
 from sqlalchemy.orm import Session, Query
-from sqlalchemy.ext.declarative import declarative_base
+
+from .Entity import Entity, Base
 
 try:
     db_string: str = "postgres://{}:{}@{}:{}/{}" \
@@ -20,7 +20,6 @@ except KeyError:
                    " POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB")
 
 engine = create_engine(db_string, pool_size=10, max_overflow=20)
-Base = declarative_base()
 
 
 def create_tables() -> None:
@@ -89,19 +88,6 @@ def fetch_lastseen(db: Session) -> Query:
     :return: Query
     """
     return db.query(Entity.timestamp, Entity.mac, Entity.ip).order_by(desc(Entity.timestamp))
-
-
-class Entity(Base):
-    __tablename__ = 'entity'
-    id = Column(Integer, primary_key=True)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
-    mac = Column(String)
-    ip = Column(String)
-
-    __table_args__ = (UniqueConstraint('mac', 'ip', name='_mac_ip_uc'),)
-
-    def __repr__(self) -> str:
-        return f'<{self.__class__.__name__} id={self.id} MAC={self.mac} IP={self.ip}>'
 
 
 def get_db() -> Session:

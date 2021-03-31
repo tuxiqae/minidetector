@@ -10,7 +10,8 @@ from scapy.layers.inet import IP
 from scapy.layers.l2 import Ether
 from scapy.packet import Packet
 
-from lib.database import Entity, create_session, load_db_entries, Session, db_init
+from lib.database import create_session, load_db_entries, Session, db_init
+from lib.Entity import Entity
 from argparser import argparse_init
 
 packet_queue: Queue = Queue()

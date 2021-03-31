@@ -35,7 +35,12 @@ def process_data() -> None:
     ip_mac_set: typing.Set[typing.Tuple[str, str]] = load_db_entries()
 
     packet_count = 0
-    session: Session = create_session()  # Creates a new DB session
+    try:
+        session: Session = create_session()  # Creates a new DB session
+    except BaseException as e:
+        logging.critical(e)
+        exit(1)
+
     while packet := packet_queue.get():
         packet_count += 1
         if packet_count % 100 == 0 and (qs := packet_queue.qsize() or 0) != 0:
@@ -44,18 +49,23 @@ def process_data() -> None:
         ip = packet[IP].src
         entity = Entity(mac=mac, ip=ip)
 
-        if (pair := (ip, mac)) not in ip_mac_set:
-            logging.info(f'Added entity {entity}')
-            ip_mac_set.add(pair)
-            session.add(entity)
-        else:
-            logging.debug(f'Updated entity {entity}')
-            session.query(Entity) \
-                .filter(Entity.mac == mac, Entity.ip == ip) \
-                .update({"timestamp": datetime.datetime.utcnow()})
+        try:
+            if (pair := (ip, mac)) not in ip_mac_set:
+                logging.info(f'Added entity {entity}')
+                ip_mac_set.add(pair)
+                session.add(entity)
+            else:
+                logging.debug(f'Updated entity {entity}')
+                session.query(Entity) \
+                    .filter(Entity.mac == mac, Entity.ip == ip) \
+                    .update({"timestamp": datetime.datetime.utcnow()})
 
-        if packet_count % 10 == 0:
-            session.commit()
+            if packet_count % 10 == 0:
+                session.commit()
+
+        except BaseException as e:
+            logging.critical(e)
+            exit(1)
 
     session.close()
 

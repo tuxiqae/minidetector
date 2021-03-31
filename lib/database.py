@@ -101,3 +101,11 @@ class Entity(Base):
 
     def __repr__(self) -> str:
         return f'<{self.__class__.__name__} id={self.id} MAC={self.mac} IP={self.ip}>'
+
+
+def get_db():
+    db = create_session()
+    try:
+        yield db
+    finally:
+        db.close()

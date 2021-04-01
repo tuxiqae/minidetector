@@ -33,6 +33,11 @@ services:
     network_mode: host
     privileged: true
     restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 2
+        window: 30s
 
   api:
     build: ./api
@@ -53,6 +58,11 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 2
+        window: 30s
 
 networks:
   db:

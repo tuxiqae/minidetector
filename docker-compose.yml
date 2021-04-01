@@ -15,7 +15,7 @@ services:
       - db
     ports:
       - "127.0.0.1:${POSTGRES_PORT}:5432"
-
+    restart: always
 
   sniffer:
     build: ./minidetector
@@ -32,6 +32,7 @@ services:
       - postgres
     network_mode: host
     privileged: true
+    restart: unless-stopped
 
   api:
     build: ./api
@@ -50,6 +51,7 @@ services:
       - "0.0.0.0:${API_PORT:-8000}:8000"
     depends_on:
       - postgres
+    restart: unless-stopped
 
 networks:
   db:

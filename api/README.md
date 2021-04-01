@@ -12,6 +12,6 @@ a testing environment for the API endpoints.
 - `GET /all`
     - Returns a list of all `MAC`, `IP` address pairs
 - `GET /routers`
-    - Returns a list of `MAC` addresses which appears more than 3 times in the database.
+  - Returns a list of `MAC` addresses which appears more than 3 times in the database
 - `GET /lastseen`
-    - Returns a list of all `timestamp`, `MAC`, `IP` trios, ordered by recency
+  - Returns a list of all (`timestamp`, `MAC`, `IP`) trios, ordered by recency

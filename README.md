@@ -19,7 +19,7 @@ The `minidetector` is an app which sniffs network traffic in order to map the ne
 - `Docker Compose`
 
 In order to run `minidetector` execute the following command:
-`$ docker-compose up` or `$ docker-compose up --build` if it is the first time the project is initialized.
+`$ docker-compose up`
 
 This command will run both services, and the DB container as configured in the `docker-compose.yml` file.
 

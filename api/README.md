@@ -6,8 +6,9 @@ A `REST API` which allows users to fetch the entities `minidetector` mapped.
 
 ## Endpoints
 
-Since our API was built using`FastAPI`, developers can use their browsers to access the `/docs` endpoint which contains
-a testing environment for the API endpoints.
+Since our API was built using`FastAPI`, developers can use their browsers to access the `/` endpoint which contains a
+testing environment for the API endpoints. You could also access the `/redoc` endpoint in order to get the `ReDoc`
+documentation interface
 
 - `GET /all`
     - Returns a list of all `MAC`, `IP` address pairs

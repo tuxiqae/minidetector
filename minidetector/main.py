@@ -34,14 +34,16 @@ def process_data() -> None:
     Iterates over a list of packets and inserts them into the DB
     :return: None
     """
-    ip_mac_set: typing.Set[typing.Tuple[str, str]] = load_db_entries()
-
     packet_count = 0
+    session: typing.Optional[Session] = None
     try:
-        session: Session = create_session()  # Creates a new DB session
+        session = create_session()  # Creates a new DB session
+
     except BaseException as e:
         logging.critical(e)
         exit(1)
+
+    ip_mac_set: typing.Set[typing.Tuple[str, str]] = load_db_entries(session)
 
     while packet := packet_queue.get():
         packet_count += 1

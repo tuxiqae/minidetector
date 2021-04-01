@@ -24,8 +24,8 @@ def get_routers(db: Session = Depends(get_db)) -> JSONResponse:
 
     try:
         response["data"] = [macs[0] for macs in fetch_routers(db).all()]
-    except BaseException as e:
-        logging.error(e)
+    except Exception as e:
+        logging.exception(e)
         response["err"] = str(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=response)
 

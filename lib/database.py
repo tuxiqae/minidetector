@@ -31,8 +31,8 @@ def create_tables() -> None:
     """
     try:
         return Base.metadata.create_all(engine)
-    except BaseException as e:
-        logging.debug(e)
+    except Exception as e:
+        logging.debug(e)  # Logging to debug in order to prevent spam in case of unready DB.
         exit(1)
 
 

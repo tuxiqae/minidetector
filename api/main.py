@@ -23,6 +23,6 @@ if __name__ == "__main__":
         uvicorn.run(app, host="0.0.0.0", port=int(port))
     except KeyError:
         raise KeyError("Could not fetch the environment variable `API_PORT`")
-    except BaseException as e:
-        logging.critical(e)
+    except Exception as e:
+        logging.exception(e)
         exit(1)

@@ -24,9 +24,9 @@ def get_entities(db: Session = Depends(get_db)) -> JSONResponse:
 
     try:
         response["data"] = [{"ip": ip, "mac": mac} for mac, ip in fetch_entities(db).all()]
-    except BaseException as e:
+    except Exception as e:
         response["err"] = str(e)
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=response)
 
     return JSONResponse(content=jsonable_encoder(response))

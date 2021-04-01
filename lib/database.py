@@ -3,6 +3,7 @@ import typing
 from os import environ
 
 from sqlalchemy import create_engine, select, func, desc
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, Query
 
 from .Entity import Entity, Base
@@ -19,7 +20,7 @@ except KeyError:
     raise KeyError("Could not fetch one or more of following environment variables:"
                    " POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB")
 
-engine = create_engine(db_string, pool_size=10, max_overflow=20)
+engine: Engine = create_engine(db_string, pool_size=10, max_overflow=20)
 
 
 def create_tables() -> None:
@@ -28,7 +29,11 @@ def create_tables() -> None:
 
     :return: None
     """
-    Base.metadata.create_all(engine)
+    try:
+        return Base.metadata.create_all(engine)
+    except BaseException as e:
+        logging.debug(e)
+        exit(1)
 
 
 def drop_tables() -> None:
@@ -49,12 +54,15 @@ def create_session() -> Session:
     return Session(bind=engine)
 
 
-def load_db_entries() -> typing.Set[typing.Tuple[str, str]]:
+def load_db_entries(db: Session) -> typing.Set[typing.Tuple[str, str]]:
     """
     Fetches all entities from the DB and returns them as a set of pairs
+
+    :param db: A DB session
+    :return: A set of MAC, IP tuples
     """
     query = select([Entity.ip, Entity.mac])
-    return set((i, m) for i, m in engine.connect().execute(query).fetchall())
+    return set((i, m) for i, m in db.execute(query).fetchall())
 
 
 # GET /all

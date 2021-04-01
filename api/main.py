@@ -1,6 +1,9 @@
+import logging
 import uvicorn
 
 from fastapi import FastAPI
+from os import environ
+
 from endpoints.all import router as all_router
 from endpoints.routers import router as routers_router
 from endpoints.lastseen import router as lastseen_router

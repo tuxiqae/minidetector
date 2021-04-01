@@ -10,6 +10,7 @@ from scapy.layers.inet import IP
 from scapy.layers.l2 import Ether
 from scapy.packet import Packet
 
+from lib.ascii_banner import print_ascii_banner
 from lib.database import create_session, load_db_entries, Session, db_init
 from lib.Entity import Entity
 from argparser import argparse_init
@@ -74,6 +75,7 @@ def process_data() -> None:
 
 
 def main() -> None:
+    print_ascii_banner("MiniDetector")
     db_init(argparse_init().clean)
 
     logging.debug('Starting sniffing thread')

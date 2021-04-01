@@ -17,7 +17,8 @@ setuptools.setup(
         "sqlalchemy>=1.3,<1.4",
         "psycopg2-binary",
         "fastapi",
-        "uvicorn[standard]"
+        "uvicorn[standard]",
+        "pyfiglet",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

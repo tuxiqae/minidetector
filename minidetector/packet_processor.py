@@ -17,6 +17,7 @@ packet_queue: Queue = Queue()
 def on_packet(p: Packet) -> None:
     """
     Checks whether a packet `p` is valid, if so, insert into `packet_queue`
+
     :param p: Packet
     :return: None
     """
